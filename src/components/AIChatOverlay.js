@@ -22,7 +22,7 @@ const SIDE_MARGIN = 12;
 const GAP = 12;
 
 // Hugging Face Router API key and model
-const HF_API_KEY = "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"; // Remplace par ton HF key
+const HF_API_KEY 
 const HF_MODEL = "meta-llama/Llama-3.1-8B-Instruct";
 
 export default function AIChatOverlay() {
