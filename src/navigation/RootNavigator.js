@@ -6,6 +6,7 @@ import RegisterScreen from "../screens/RegisterScreen";
 import MainTabNavigator from "./MainTabNavigator";
 import { AuthContext } from "../context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
+import MainStackNavigator from "./MainStackNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,7 @@ export default function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name="Main" component={MainTabNavigator} />
+    <Stack.Screen name="Main" component={MainStackNavigator} />
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />

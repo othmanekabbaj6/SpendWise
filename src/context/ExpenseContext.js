@@ -6,6 +6,7 @@ import {
   removeExpense,
   updateExpense,
   fetchExpensesOnce,
+  deleteExpensesByCategory
 } from "../services/expenses";
 
 export const ExpenseContext = createContext();
@@ -13,6 +14,8 @@ export const ExpenseContext = createContext();
 export const ExpenseProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -96,6 +99,10 @@ export const ExpenseProvider = ({ children }) => {
     await updateExpense(id, updatedExpense);
   };
 
+  const deleteExpensesByCategory = (categoryName) => {
+    setExpenses((prev) => prev.filter((e) => e.category !== categoryName));
+};
+
   return (
     <ExpenseContext.Provider
       value={{
@@ -104,6 +111,7 @@ export const ExpenseProvider = ({ children }) => {
         addExpense,
         deleteExpense,
         editExpense,
+        deleteExpensesByCategory, 
       }}
     >
       {children}

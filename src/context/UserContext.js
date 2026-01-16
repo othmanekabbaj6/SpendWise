@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
 
       const docRef = doc(db, "users", auth.currentUser.uid);
 
-      // Écoute en temps réel du document utilisateur
+      
       unsubscribe = onSnapshot(docRef, (snapshot) => {
         setProfile(snapshot.exists() ? snapshot.data() : null);
       });
@@ -26,7 +26,7 @@ export const UserProvider = ({ children }) => {
 
     initProfileListener();
 
-    // 🔹 Stoppe et relance le listener à chaque changement d'utilisateur
+    
     const authUnsub = auth.onAuthStateChanged(() => {
       unsubscribe();
       initProfileListener();
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
   const updateProfile = async (data) => {
     if (!auth.currentUser) throw new Error("Utilisateur non connecté");
     const docRef = doc(db, "users", auth.currentUser.uid);
-    await setDoc(docRef, data, { merge: true }); // merge = ne pas écraser le doc
+    await setDoc(docRef, data, { merge: true });
     setProfile((prev) => ({ ...prev, ...data }));
   };
 

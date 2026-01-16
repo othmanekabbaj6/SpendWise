@@ -14,13 +14,13 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "./firebase";
 
-// Ajouter une nouvelle dépense
+// ---------------- ADD EXPENSE ----------------
 export const addExpenseToDB = async ({ name, amount, type, category, note, date }) => {
-  if (!auth.currentUser) throw new Error("Utilisateur non connecté");
+  if (!auth.currentUser) throw new Error("User not logged in");
 
   return addDoc(collection(db, "expenses"), {
     userId: auth.currentUser.uid,
-    name: name || "Sans titre",      // <- Champ name ajouté
+    name: name || "Untitled",
     amount: Number(amount),
     type,
     category,
@@ -30,9 +30,9 @@ export const addExpenseToDB = async ({ name, amount, type, category, note, date 
   });
 };
 
-// Récupérer toutes les dépenses une seule fois
+// ---------------- FETCH EXPENSES ONCE ----------------
 export const fetchExpensesOnce = async () => {
-  if (!auth.currentUser) throw new Error("Utilisateur non connecté");
+  if (!auth.currentUser) throw new Error("User not logged in");
 
   const q = query(
     collection(db, "expenses"),
@@ -44,7 +44,7 @@ export const fetchExpensesOnce = async () => {
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 };
 
-// Écoute en temps réel des dépenses
+// ---------------- REALTIME SUBSCRIPTION ----------------
 export const subscribeToExpenses = (onUpdate) => {
   if (!auth.currentUser) return () => {};
 
@@ -68,19 +68,35 @@ export const subscribeToExpenses = (onUpdate) => {
   return unsubscribe;
 };
 
-// Supprimer une dépense
+// ---------------- REMOVE EXPENSE ----------------
 export const removeExpense = async (expenseId) => {
   await deleteDoc(doc(db, "expenses", expenseId));
 };
 
-// Mettre à jour une dépense
+// ---------------- UPDATE EXPENSE ----------------
 export const updateExpense = async (expenseId, { name, amount, type, category, note, date }) => {
   await updateDoc(doc(db, "expenses", expenseId), {
-    name: name || "Sans titre",   // <- Champ name ajouté
+    name: name || "Untitled",
     amount,
     type,
     category,
     note,
     date: date ? new Date(date) : new Date(),
   });
+};
+
+// ---------------- DELETE EXPENSES BY CATEGORY ----------------
+export const deleteExpensesByCategory = async (categoryName) => {
+  if (!auth.currentUser) throw new Error("User not logged in");
+
+  const q = query(
+    collection(db, "expenses"),
+    where("userId", "==", auth.currentUser.uid),
+    where("category", "==", categoryName)
+  );
+
+  const snapshot = await getDocs(q);
+  const batch = snapshot.docs.map(docSnap => deleteDoc(doc(db, "expenses", docSnap.id)));
+
+  await Promise.all(batch);
 };

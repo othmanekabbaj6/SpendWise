@@ -3,22 +3,22 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function ExpenseCard({ item }) {
-  const amountColor = item.type === "income" ? "#2d6a4f" : "#d9534f"; // vert pour revenu, rouge pour dépense
-  const date = new Date(item.date).toLocaleDateString();
+  const amountColor = item.type === "income" ? "#2d6a4f" : "#d9534f"; // green for income, red for expense
+  const dateObj = new Date(item.date);
+  const date = dateObj.toLocaleDateString();
+  const time = dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   return (
     <View style={styles.card}>
-      {/* Partie gauche : nom, type, catégorie, note */}
+      {/* Left side: name, type, category, note */}
       <View style={styles.left}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={[styles.type, { color: amountColor }]}>
-          {item.displayType} {/* "Revenu" ou "Dépense" */}
-        </Text>
+        <Text style={[styles.type, { color: amountColor }]}>{item.displayType}</Text>
         <Text style={styles.category}>{item.category}</Text>
-        {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+        {item.note ? <Text style={styles.note}>{"Note: " + item.note}</Text> : null}
       </View>
 
-      {/* Partie droite : montant et date */}
+      {/* Right side: amount, date, time */}
       <View style={styles.right}>
         <Text style={[styles.amount, { color: amountColor }]}>
           {item.type === "income" ? "+" : "-"}
